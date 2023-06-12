@@ -73,23 +73,30 @@ public class AppUpdater
         {
             BaseAddress = _updaterServiceUri
         };
-        using var versionResponse = await http.GetAsync(_latestVersionAction);
-        if (versionResponse.IsSuccessStatusCode)
+        try
         {
-            string? versionStr = await versionResponse.Content.ReadAsStringAsync();
-            try
+            using var versionResponse = await http.GetAsync(_latestVersionAction);
+            if (versionResponse.IsSuccessStatusCode)
             {
-                return Version.Parse(versionStr);
+                string? versionStr = await versionResponse.Content.ReadAsStringAsync();
+                try
+                {
+                    return Version.Parse(versionStr);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                return null;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Error requesting latest version: {versionResponse.StatusCode} ({versionResponse.ReasonPhrase})");
             }
-            return null;
         }
-        else
+        catch(Exception ex)
         {
-            Console.WriteLine($"Error requesting latest version: {versionResponse.StatusCode} ({versionResponse.ReasonPhrase})");
+            Console.WriteLine(ex.Message);
         }
         return null;
     }
