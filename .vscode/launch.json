@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (console)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build MyApp",
+            "program": "${workspaceFolder}/MyApp/bin/Debug/net6.0/linux-x64/MyApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/MyApp",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build UpdaterService",
+            "program": "${workspaceFolder}/UpdaterService/bin/Debug/net6.0/UpdaterService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/UpdaterService",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}

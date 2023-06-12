@@ -1,0 +1,131 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build MyApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/MyApp/MyApp.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "hide": true
+        },
+        {
+            "label": "build UpdaterService",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/UpdaterService/UpdaterService.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "hide": true
+        },
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${input:solutionToBuild}",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${input:solutionToAction}"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish MyApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "--configuration", "Release",
+                "${workspaceFolder}/MyApp/MyApp.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "clean UpdaterService deployment",
+            "command": "rm",
+            "type": "process",
+            "args": [
+                "-f",
+                "${workspaceFolder}/UpdaterService/MyApp/MyApp.zip"
+            ],
+            "dependsOn": "publish MyApp",
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "deploy MyApp to UpdaterService",
+            "command": "zip",
+            "type": "process",
+            "args": [
+                "-j",
+                "${workspaceFolder}/UpdaterService/MyApp/MyApp.zip",
+                "${workspaceFolder}/MyApp/bin/Release/net6.0/linux-x64/publish/MyApp",
+                "${workspaceFolder}/MyApp/bin/Release/net6.0/linux-x64/publish/MyApp.pdb"
+            ],
+            "dependsOn": "clean UpdaterService deployment",
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "solutionToBuild",
+            "description": "Select solution",
+            "default": "${workspaceFolder}/dinamically_updated_app.sln",
+            "type": "pickString",
+            "options": [
+                {
+                    "label": "All",
+                    "value": "${workspaceFolder}/dinamically_updated_app.sln"
+                },
+                {
+                    "label": "MyApp",
+                    "value": "${workspaceFolder}/MyApp/MyApp.sln"
+                },
+                {
+                    "label": "UpdaterService",
+                    "value": "${workspaceFolder}/UpdaterService/UpdaterService.sln"
+                }
+            ]
+        },
+        {
+            "id": "solutionToAction",
+            "description": "Select project",
+            "type": "pickString",
+            "options": [
+                {
+                    "label": "MyApp",
+                    "value": "${workspaceFolder}/MyApp/MyApp.sln"
+                },
+                {
+                    "label": "UpdaterService",
+                    "value": "${workspaceFolder}/UpdaterService/UpdaterService.sln"
+                }
+            ]
+        }
+    ]
+}
