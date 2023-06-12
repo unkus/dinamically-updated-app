@@ -11,7 +11,7 @@ public class ProgramUpdater
 
     private readonly string ZIP_FILE_PATH = Path.Combine(AppContext.BaseDirectory, "MyApp.zip");
 
-    private readonly IEnumerable<string> LOCAL_FILES = new List<string> { "MyApp", "MyApp.pdb" };
+    private readonly IEnumerable<string> LOCAL_FILES = new List<string> { "MyApp", "MyApp.exe", "MyApp.pdb" };
 
     public async Task<bool> IsUpdateNeeded()
     {
@@ -123,7 +123,11 @@ public class ProgramUpdater
     {
         foreach (var item in LOCAL_FILES)
         {
-            File.Move(Path.Combine(AppContext.BaseDirectory, item), Path.Combine(AppContext.BaseDirectory, $"{item}.old"), true);
+            string path = Path.Combine(AppContext.BaseDirectory, item);
+            if(File.Exists(path))
+            {
+                File.Move(path, Path.Combine(AppContext.BaseDirectory, $"{item}.old"), true);                
+            }
         }
     }
 
@@ -134,7 +138,11 @@ public class ProgramUpdater
         // Удаляем файлы старой версии
         foreach (var item in LOCAL_FILES)
         {
-            File.Delete(Path.Combine(AppContext.BaseDirectory, $"{item}.old"));
+            string path = Path.Combine(AppContext.BaseDirectory, $"{item}.old");
+            if(File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
     }
 
