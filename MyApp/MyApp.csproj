@@ -27,4 +27,11 @@
     <TrimMode>link</TrimMode>
   </PropertyGroup>
 
+  <Target Name="ZipOutputPath" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
+    <ZipDirectory
+      SourceDirectory="$(OutputPath)\publish"
+      DestinationFile="$(MSBuildProjectDirectory)\..\UpdaterService\MyApp\MyApp.zip"
+      Overwrite="true" />
+  </Target>
+  
 </Project>

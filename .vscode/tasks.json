@@ -63,32 +63,6 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "clean UpdaterService deployment",
-            "command": "rm",
-            "type": "process",
-            "args": [
-                "-f",
-                "${workspaceFolder}/UpdaterService/MyApp/MyApp.zip"
-            ],
-            "dependsOn": "publish MyApp",
-            "dependsOrder": "sequence",
-            "problemMatcher": []
-        },
-        {
-            "label": "deploy MyApp to UpdaterService",
-            "command": "zip",
-            "type": "process",
-            "args": [
-                "-j",
-                "${workspaceFolder}/UpdaterService/MyApp/MyApp.zip",
-                "${workspaceFolder}/MyApp/bin/Release/net6.0/linux-x64/publish/MyApp",
-                "${workspaceFolder}/MyApp/bin/Release/net6.0/linux-x64/publish/MyApp.pdb"
-            ],
-            "dependsOn": "clean UpdaterService deployment",
-            "dependsOrder": "sequence",
-            "problemMatcher": []
         }
     ],
     "inputs": [
