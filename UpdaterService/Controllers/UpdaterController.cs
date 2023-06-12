@@ -11,7 +11,8 @@ public class UpdaterController : ControllerBase
 
     private readonly ILogger<UpdaterController> _logger;
     private readonly IWebHostEnvironment _environment;
-    private readonly string _version;
+    private readonly string _consoleAppVersion;
+    private readonly string _wpfAppVersion;
 
     public UpdaterController(ILogger<UpdaterController> logger, IWebHostEnvironment environment)
     {
@@ -20,8 +21,17 @@ public class UpdaterController : ControllerBase
 
         try
         {
-            using var sr = new StreamReader("MyApp/MyApp.version");
-            _version = sr.ReadToEndAsync().Result;
+            using var sr = new StreamReader("ConsoleApp/ConsoleApp.version");
+            _consoleAppVersion = sr.ReadToEndAsync().Result.Trim();
+        }
+        catch
+        {
+            throw;
+        }
+        try
+        {
+            using var sr = new StreamReader("WpfApp/WpfApp.version");
+            _wpfAppVersion = sr.ReadToEndAsync().Result.Trim();
         }
         catch
         {
@@ -30,19 +40,36 @@ public class UpdaterController : ControllerBase
     }
 
     [HttpGet]
-    [Route("LatestVersion")]
-    public string? LatestVersion()
+    [Route("LatestConsoleAppVersion")]
+    public string? LatestConsoleAppVersion()
     {
-        _logger.LogDebug($"Latest version requested ({_version})");
-        return _version;
+        _logger.LogInformation($"Latest version requested ({_consoleAppVersion})");
+        return _consoleAppVersion;
     }
 
     [HttpGet]
-    [Route("Latest")]
-    public PhysicalFileResult Latest()
+    [Route("LatestConsoleApp")]
+    public PhysicalFileResult LatestConsoleApp()
     {
-        _logger.LogDebug("Latest app requested");
-        var filepath = Path.Combine(_environment.ContentRootPath, "MyApp", "MyApp.zip");
+        _logger.LogInformation("Latest app requested");
+        var filepath = Path.Combine(_environment.ContentRootPath, "ConsoleApp", "ConsoleApp.zip");
+        return PhysicalFile(filepath, "application/zip");
+    }
+
+    [HttpGet]
+    [Route("LatestWpfAppVersion")]
+    public string? LatestWpfAppVersion()
+    {
+        _logger.LogInformation($"Latest version requested ({_wpfAppVersion})");
+        return _wpfAppVersion;
+    }
+
+    [HttpGet]
+    [Route("LatestWpfApp")]
+    public PhysicalFileResult LatestWpfApp()
+    {
+        _logger.LogInformation("Latest app requested");
+        var filepath = Path.Combine(_environment.ContentRootPath, "WpfApp", "WpfApp.zip");
         return PhysicalFile(filepath, "application/zip");
     }
 }

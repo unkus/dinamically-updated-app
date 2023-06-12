@@ -2,19 +2,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "ConsoleApp",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "build MyApp",
-            "windows": { "program": "${workspaceFolder}/MyApp/bin/Debug/net6.0/win7-x64/MyApp.dll" },
-            "linux": { "program": "${workspaceFolder}/MyApp/bin/Debug/net6.0/linux-x64/MyApp.dll" },
+            "preLaunchTask": "build ConsoleApp",
+            "windows": { "program": "${workspaceFolder}/ConsoleApp/bin/Debug/net6.0/win7-x64/ConsoleApp.dll" },
+            "linux": { "program": "${workspaceFolder}/ConsoleApp/bin/Debug/net6.0/linux-x64/ConsoleApp.dll" },
             "args": [],
-            "cwd": "${workspaceFolder}/MyApp",
+            "cwd": "${workspaceFolder}/ConsoleApp",
             "console": "internalConsole",
             "stopAtEntry": false
         },
         {
-            "name": ".NET Core Launch (web)",
+            "name": "WpfApp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build WpfApp",
+            "program": "${workspaceFolder}/WpfApp/bin/Debug/net6.0-windows/win7-x64/WpfApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": "UpdaterService",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build UpdaterService",
@@ -34,12 +45,6 @@
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach"
-        }
-    ],
-    "inputs": [
-        {
-            "id": "program",
-            "command": ""
         }
     ]
 }

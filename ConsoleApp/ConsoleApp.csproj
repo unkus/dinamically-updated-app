@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\Updater\Updater.csproj" />
+  </ItemGroup>
+
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <Version>1.0.0.0</Version>
   </PropertyGroup>
@@ -28,10 +32,7 @@
   </PropertyGroup>
 
   <Target Name="ZipOutputPath" AfterTargets="Publish" Condition=" '$(Configuration)' == 'Release' ">
-    <ZipDirectory
-      SourceDirectory="$(OutputPath)\publish"
-      DestinationFile="$(MSBuildProjectDirectory)\..\UpdaterService\MyApp\MyApp.zip"
-      Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(OutputPath)\publish" DestinationFile="$(MSBuildProjectDirectory)\..\UpdaterService\ConsoleApp\ConsoleApp.zip" Overwrite="true" />
   </Target>
   
 </Project>

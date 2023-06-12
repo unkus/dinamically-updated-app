@@ -2,12 +2,25 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build MyApp",
+            "label": "build ConsoleApp",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/MyApp/MyApp.sln",
+                "${workspaceFolder}/ConsoleApp/ConsoleApp.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile",
+            "hide": true
+        },
+        {
+            "label": "build WpfApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/WpfApp/WpfApp.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -52,13 +65,26 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "publish MyApp",
+            "label": "publish ConsoleApp",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "publish",
                 "--configuration", "Release",
-                "${workspaceFolder}/MyApp/MyApp.sln",
+                "${workspaceFolder}/ConsoleApp/ConsoleApp.sln",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish WpfApp",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "--configuration", "Release",
+                "${workspaceFolder}/WpfApp/WpfApp.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -77,8 +103,12 @@
                     "value": "${workspaceFolder}/dinamically_updated_app.sln"
                 },
                 {
-                    "label": "MyApp",
-                    "value": "${workspaceFolder}/MyApp/MyApp.sln"
+                    "label": "ConsoleApp",
+                    "value": "${workspaceFolder}/ConsoleApp/ConsoleApp.sln"
+                },
+                {
+                    "label": "WpfApp",
+                    "value": "${workspaceFolder}/WpfApp/WpfApp.sln"
                 },
                 {
                     "label": "UpdaterService",
@@ -92,8 +122,12 @@
             "type": "pickString",
             "options": [
                 {
-                    "label": "MyApp",
-                    "value": "${workspaceFolder}/MyApp/MyApp.sln"
+                    "label": "ConsoleApp",
+                    "value": "${workspaceFolder}/ConsoleApp/ConsoleApp.sln"
+                },
+                {
+                    "label": "WpfApp",
+                    "value": "${workspaceFolder}/WpfApp/WpfApp.sln"
                 },
                 {
                     "label": "UpdaterService",

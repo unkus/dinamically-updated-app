@@ -1,26 +1,34 @@
 using System.IO.Compression;
 using System.Reflection;
 
-namespace MyApp.Updater;
+namespace Updater;
 
-public class ProgramUpdater
+public class AppUpdater
 {
-    private readonly Version? _currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
     // UpdaterService
     private readonly Uri _updaterServiceUri = new("https://localhost:7189");
 
-    private readonly string ZIP_FILE_PATH = Path.Combine(AppContext.BaseDirectory, "MyApp.zip");
+    private readonly string ZIP_FILE_PATH = Path.Combine(Directory.GetCurrentDirectory(), "tmp.zip");
 
-    private readonly IEnumerable<string> LOCAL_FILES = new List<string> { "MyApp", "MyApp.exe", "MyApp.pdb" };
+    private readonly IEnumerable<string> _files;
+    private readonly string _latestVersionAction;
+    private readonly string _latestAction;
 
-    public async Task<bool> IsUpdateNeeded()
+    public AppUpdater(AppType appType, IEnumerable<string> files)
+    {
+        // Плохая реализация
+        _latestVersionAction = $"Updater/Latest{appType}AppVersion";
+        _latestAction = $"Updater/Latest{appType}App";
+        _files = files;
+    }
+
+    public async Task<bool> IsUpdateNeededAsync(Version currentVersion)
     {
         // Запрашиваем последнюю версию
-        var latestVersion = await GetLatestVersion();
+        var latestVersion = await GetLatestVersionAsync();
         if(latestVersion != null)
         {
-            Console.WriteLine($"Последняя версия: {latestVersion}");
-            return _currentVersion < latestVersion;
+            return currentVersion < latestVersion;
         }
         else
         {
@@ -29,10 +37,10 @@ public class ProgramUpdater
         }
     }
 
-    public async Task<bool> Update()
+    public async Task<bool> UpdateAsync()
     {
         // Запрашиваем архив с новой версией
-        if (await RetrieveNewVersion())
+        if (await RetrieveNewVersionAsync())
         {
             try
             {
@@ -57,19 +65,15 @@ public class ProgramUpdater
         return false;
     }
 
-    private async Task<Version?> GetLatestVersion()
+    private async Task<Version?> GetLatestVersionAsync()
     {
-        using var httpHandler = new HttpClientHandler()
-        {
-            // Проверка сертификата не входит в текущие задачи
-            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-        };
+        using var httpHandler = new HttpClientHandler();
 
         using var http = new HttpClient(httpHandler)
         {
             BaseAddress = _updaterServiceUri
         };
-        using var versionResponse = await http.GetAsync("Updater/LatestVersion");
+        using var versionResponse = await http.GetAsync(_latestVersionAction);
         if (versionResponse.IsSuccessStatusCode)
         {
             string? versionStr = await versionResponse.Content.ReadAsStringAsync();
@@ -90,7 +94,7 @@ public class ProgramUpdater
         return null;
     }
 
-    public async Task<bool> RetrieveNewVersion()
+    public async Task<bool> RetrieveNewVersionAsync()
     {
         using var httpHandler = new HttpClientHandler()
         {
@@ -102,7 +106,7 @@ public class ProgramUpdater
         {
             BaseAddress = _updaterServiceUri
         };
-        using var latestResponse = await http.GetAsync("Updater/Latest");
+        using var latestResponse = await http.GetAsync(_latestAction);
         if (latestResponse.IsSuccessStatusCode)
         {
             using var file = File.OpenWrite(ZIP_FILE_PATH);
@@ -121,28 +125,27 @@ public class ProgramUpdater
 
     private void Backup()
     {
-        foreach (var item in LOCAL_FILES)
+        foreach (var item in _files)
         {
             string path = Path.Combine(AppContext.BaseDirectory, item);
             if(File.Exists(path))
             {
-                File.Move(path, Path.Combine(AppContext.BaseDirectory, $"{item}.old"), true);                
+                File.Move(path, Path.Combine(AppContext.BaseDirectory, $"{item}.old"), true);
             }
         }
     }
 
-    private void Cleanup()
+    public void Cleanup()
     {
         // Удаляем архив
         File.Delete(ZIP_FILE_PATH);
         // Удаляем файлы старой версии
-        foreach (var item in LOCAL_FILES)
+        foreach (var item in _files)
         {
-            string path = Path.Combine(AppContext.BaseDirectory, $"{item}.old");
-            if(File.Exists(path))
-            {
-                File.Delete(path);
-            }
+            // TODO: не хочу делать отдельный исполняемый файл и не хочу делать через аргументы запуска основного приложения
+            // Остается только удаление с задержкой средствами OS?
+            // string path = Path.Combine(AppContext.BaseDirectory, $"{item}.old");
+            // File.Delete(path);
         }
     }
 
