@@ -31,6 +31,10 @@ namespace WpfApp
                     Environment.Exit(0);
                 }
             }
+            else
+            {
+                AppUpdater.Cleanup();
+            }
 
             base.OnStartup(e);
         }

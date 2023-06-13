@@ -20,6 +20,8 @@ if (await updater.IsUpdateNeededAsync(Assembly.GetExecutingAssembly().GetName().
         Thread.Sleep(1000);
         Environment.Exit(0);
     }
+} else {
+    AppUpdater.Cleanup();
 }
 
 Console.WriteLine("Нет новой версии - используем текущую");

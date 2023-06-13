@@ -26,7 +26,7 @@ public class AppUpdater
     {
         // Запрашиваем последнюю версию
         var latestVersion = await GetLatestVersionAsync();
-        if(latestVersion != null)
+        if (latestVersion != null)
         {
             return currentVersion < latestVersion;
         }
@@ -58,8 +58,8 @@ public class AppUpdater
             }
             finally
             {
-                Cleanup();
-
+                // Удаляем архив
+                File.Delete(ZIP_FILE_PATH);
             }
         }
         return false;
@@ -67,7 +67,11 @@ public class AppUpdater
 
     private async Task<Version?> GetLatestVersionAsync()
     {
-        using var httpHandler = new HttpClientHandler();
+        using var httpHandler = new HttpClientHandler()
+        {
+            // Проверка сертификата не входит в текущие задачи
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
 
         using var http = new HttpClient(httpHandler)
         {
@@ -94,7 +98,7 @@ public class AppUpdater
                 Console.WriteLine($"Error requesting latest version: {versionResponse.StatusCode} ({versionResponse.ReasonPhrase})");
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
@@ -135,24 +139,19 @@ public class AppUpdater
         foreach (var item in _files)
         {
             string path = Path.Combine(AppContext.BaseDirectory, item);
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
                 File.Move(path, Path.Combine(AppContext.BaseDirectory, $"{item}.old"), true);
             }
         }
     }
 
-    public void Cleanup()
+    public static void Cleanup()
     {
-        // Удаляем архив
-        File.Delete(ZIP_FILE_PATH);
         // Удаляем файлы старой версии
-        foreach (var item in _files)
+        foreach (var item in Directory.GetFiles(AppContext.BaseDirectory, "*.old"))
         {
-            // TODO: не хочу делать отдельный исполняемый файл и не хочу делать через аргументы запуска основного приложения
-            // Остается только удаление с задержкой средствами OS?
-            // string path = Path.Combine(AppContext.BaseDirectory, $"{item}.old");
-            // File.Delete(path);
+            File.Delete(item);
         }
     }
 
