@@ -95,12 +95,12 @@
         {
             "id": "solutionToBuild",
             "description": "Select solution",
-            "default": "${workspaceFolder}/dinamically_updated_app.sln",
+            "default": "${workspaceFolder}/DinamicallyUpdatedApp.sln",
             "type": "pickString",
             "options": [
                 {
                     "label": "All",
-                    "value": "${workspaceFolder}/dinamically_updated_app.sln"
+                    "value": "${workspaceFolder}/DinamicallyUpdatedApp.sln"
                 },
                 {
                     "label": "ConsoleApp",

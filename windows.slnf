@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "dinamically_updated_app.sln",
+    "path": "DinamicallyUpdatedApp.sln",
     "projects": [
       "Updater\\Updater.csproj",
       "ConsoleApp\\ConsoleApp.csproj",
